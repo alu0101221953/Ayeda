@@ -35,10 +35,7 @@ fijo.
 ○ Frontera periódica. Se considera que los extremos del retículo son adyacentes.
 ○ Frontera reflectora. Se considera que las células fuera del retículo reflejan a las
 células adyacentes al borde dentro del retículo.
-1/4
-Grado en Ingeniería Informática
-Algoritmos y Estructuras de Datos Avanzadas
-Curso 2023-2024
+
 Un autómata celular elemental [3], el autómata celular no trivial más simple, es uno de los
 modelos más sencillos de computación que se define a partir de los siguientes elementos:
 ● El espacio celular consiste en un retículo unidimensional de células. Aunque en teoría esta
@@ -59,8 +56,8 @@ en una vecindad. Cada una de estas 256 reglas define un autómata celular elemen
 diferente.
 El autómata celular definido por la regla 110, indicada en la siguiente tabla, es equivalente a la
 Máquina de Turing Universal:
-111 110 101 100 011 010 001 000 L(G)C(G)R(G)
-0 1 1 0 1 1 1 0 C(G+1)=(C(G)+R(G)+C(G)*R(G)+L(G)*C(G)*R(G))%2
+111 110 101 100 011 010 001 000                 L(G)C(G)R(G)
+ 0   1   1   0   1   1   1   0    C(G+1)=(C(G)+R(G)+C(G)*R(G)+L(G)*C(G)*R(G))%2
 Regla 110d = 01101110b
 4. Notas de implementación
 El objetivo de esta práctica es implementar las clases, tipos de datos definidos por el usuario, que
@@ -74,39 +71,43 @@ a. El constructor de la célula recibe como parámetro su posición dentro del r
 de forma opcional su estado en la configuración inicial. Por defecto, la célula se
 crea con estado «0».
 Cell::Cell(const Position&, const State&);
+
 b. Se dispone de un método para acceder al estado de la célula.
 State Cell::getState() const;
-2/4
-Grado en Ingeniería Informática
-Algoritmos y Estructuras de Datos Avanzadas
-Curso 2023-2024
 c. Aunque el estado de una célula evoluciona sin necesidad de acceso exterior, se
 implementa un método modificador para poder establecer la configuración inicial.
 State Cell::setState(State);
+
 d. La célula dispone de un método que aplica la función de transición para obtener su
 estado en la siguiente generación. Para ello, además de su posición, la célula
 necesita conocer el estado de las células de su vecindad en la generación actual.
 Este método recibe el retículo por parámetro y calcula el siguiente estado sin
 evolucionar.
 int Cell::nextState(const Lattice&);
+
 e. Después de que cada célula haya calculado su siguiente estado, la evolución del
 autómata celular consiste en hacer que cada célula actualice su valor de estado.
 void Cell::updateState();
+
 f. La célula es responsable de su visualización en pantalla, que realiza mediante la
 sobrecarga del operador de inserción en flujo. Para facilitar la visualización se
 utilizará el carácter ‘X’ para representar el valor de estado «1», y el carácter
 espacio ‘ ‘ para el valor de estado «0».
 ostream& operator<<(ostream&, const Cell&);
+
 2. El retículo, Lattice, contiene un array de N células. Este objeto es responsable de crear
 y almacenar las células que representan el espacio celular. También es responsable de
 controlar la evolución y llevar la cuenta de las generaciones.
 a. El constructor del retículo crea las células en memoria dinámica.
+
 b. Método para cargar la configuración inicial del autómata celular. Esto es, inicializa
 el estado de cada célula en la generación G=0. Por defecto, la configuración inicial
 consiste en colocar el valor de estado «0» en todas las células, salvo en la célula
 central del retículo que tendrá el valor de estado «1».
+
 c. El retículo dispone de un método para dar acceso de lectura a las células.
 const Cell& Lattice::getCell(const Position&) const;
+
 d. El retículo es responsable de controlar la evolución del autómata, asegurando que
 todas las células calculan su estado en la generación G+1 a partir de los valores de
 estado en la generación G. Esta operación la realiza el siguiente método:
@@ -117,11 +118,8 @@ de transición para calcular su estado siguiente.
 ii. En el segundo recorrido cada célula actualiza su estado.
 e. Para la visualización del retículo se sobrecarga el operador de inserción en flujo. Un
 retículo se muestra como una línea en pantalla.
-3/4
-Grado en Ingeniería Informática
-Algoritmos y Estructuras de Datos Avanzadas
-Curso 2023-2024
 ostream& operator<<(ostream&, const Lattice&);
+
 f. El retículo debe manejar las condiciones de frontera, que tal y como se ha indicado
 previamente, se corresponden con el tratamiento de las células que se encuentren
 en los bordes del mismo. En esta práctica se implementarán las siguientes
@@ -131,6 +129,7 @@ valor de estado fijo e inalterable. Una frontera se dice fría si las células
 fuera de la frontera tiene estado «0», y caliente si tiene estado «1».
 ii. Frontera periódica. En un array de N posiciones, se considerarán
 adyacentes las celdas ubicadas en la posición cero y N-1.
+
 3. El programa principal tiene el siguiente comportamiento.
 a. Recibe por línea de comandos los siguientes argumentos:
 -size <n>, n es el tamaño del retículo. Número de células.
@@ -140,6 +139,7 @@ b=periodic
 array de estados con la configuración inicial del autómata celular.
 Si no se especifica se utilizará la configuración inicial por defecto,
 esto es, un «1» en la célula central del retículo.
+
 b. Crea los componentes del autómata celular a partir de los argumentos recibidos y
 simula la evolución del autómata celular, mostrando por pantalla la configuración de
 estados en cada generación. La simulación se puede detener en cualquier
