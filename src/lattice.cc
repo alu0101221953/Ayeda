@@ -25,7 +25,7 @@ Lattice::Lattice(int size, BoundaryType b_type, const std::string& init_file) : 
       }
       cells.push_back(Cell(size + 2, 0));
       cells[0].setBorder(true);
-      cells[size + 2].setBorder(true);
+      cells[cells.size() - 1].setBorder(true);
     } else if (boundary_type == 1) { // Frontera abierta caliente, una celula al principio y al final con estado 1
       cells.insert(cells.begin(), Cell(0, 1));
       for (int i = 1; i < size + 1; i++) {
@@ -33,7 +33,7 @@ Lattice::Lattice(int size, BoundaryType b_type, const std::string& init_file) : 
       }
       cells.push_back(Cell(size + 2, 1));
       cells[0].setBorder(true);
-      cells[size + 2].setBorder(true);
+      cells[cells.size() - 1].setBorder(true);
     } else if (boundary_type == 2) { // Frontera periodica, la primera y la última célula son vecinas
       for (int i = 0; i < size; i++) {
         cells.push_back(Cell(i, 0));

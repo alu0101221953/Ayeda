@@ -39,8 +39,7 @@ State Cell::nextState(const Lattice& lattice) const {
 	State left_neighbor, right_neighbor;
 	if (lattice.getBoundaryType() == 0 || lattice.getBoundaryType() == 1) {
 		if (border) {
-			left_neighbor = 0;
-			right_neighbor = 0;
+			return state;
 		} else {
 			if (position == 0) {
 				left_neighbor = 0;
