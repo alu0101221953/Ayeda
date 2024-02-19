@@ -119,6 +119,11 @@ void Cell::updateState() {
  * @return Flujo de salida
 */
 std::ostream& operator<<(std::ostream& os, const Cell& cell) {
-	os << cell.state;
+	// Se visualiza el estado de la célula, si es 1 se pinta una X, si es 0 se pinta un espacio
+	if (cell.getState() == 1) {
+		os << "X";
+	} else {
+		os << " ";
+	}
 	return os;
 }
