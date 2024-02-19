@@ -91,8 +91,11 @@ int main(int argc, char* argv[]) {
 	// Crear el autómata celular
 	Lattice lattice(size, boundary_type, init_file);
 
-	std::cout << lattice << std::endl;
+	std::cout << "Estado inicial: " << lattice << std::endl;
+	std::cout << "Pulsa enter para empezar" << std::endl;
+	std::cin.get();
 	std::thread key_thread(waitForKeypress);
+	std::cout << "Pulsa 'q' para terminar" << std::endl;
 	while(!stop_flag) {
 		lattice.nextGeneration();
 		std::cout << lattice << std::endl;
