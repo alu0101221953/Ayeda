@@ -125,6 +125,20 @@ int Lattice::getSize() const {
 }
 
 /**
+ * @brief Método para obtener el número de células vivas
+ * @return Número de células vivas
+*/
+int Lattice::getPopulation() const {
+  int population = 0;
+  for (const Cell& cell : cells) {
+    if (cell.getState() == 1) {
+      population++;
+    }
+  }
+  return population;
+}
+
+/**
  * @brief Sobrecarga del operador de inserción en flujo para visualización
  * @param os Flujo de salida
  * @param lattice Retículo a visualizar

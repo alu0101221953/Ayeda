@@ -36,6 +36,9 @@ class Lattice {
     // Método para obtener el tamaño del retículo
     int getSize() const;
 
+    // Metodo para obtener el número de células vivas
+    int getPopulation() const;
+
     // Sobrecarga del operador de inserción en flujo para visualización
     friend std::ostream& operator<<(std::ostream& os, const Lattice& lattice);
 };

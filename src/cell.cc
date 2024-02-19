@@ -67,25 +67,7 @@ State Cell::nextState(const Lattice& lattice) const {
 		}
 	}
 	State result;
-	// Se aplica la regla 110 del autómata celular
-	if (left_neighbor == 1 && state == 1 && right_neighbor == 1) {
-		result = 0;
-	} else if (left_neighbor == 1 && state == 1 && right_neighbor == 0) {
-		result = 1;
-	} else if (left_neighbor == 1 && state == 0 && right_neighbor == 1) {
-		result = 1;
-	} else if (left_neighbor == 1 && state == 0 && right_neighbor == 0) {
-		result = 0;
-	} else if (left_neighbor == 0 && state == 1 && right_neighbor == 1) {
-		result = 1;
-	} else if (left_neighbor == 0 && state == 1 && right_neighbor == 0) {
-		result = 1;
-	} else if (left_neighbor == 0 && state == 0 && right_neighbor == 1) {
-		result = 1;
-	} else if (left_neighbor == 0 && state == 0 && right_neighbor == 0) {
-		result = 0;
-	}
-	return result;
+	return result = left_neighbor ^ (state || right_neighbor);
 }
 
 /**
