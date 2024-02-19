@@ -10,8 +10,8 @@
 #include <utility>
 #include <iostream>
 
-using Position = int;
-using State = int;
+typedef int Position;
+typedef int State;
 
 class Lattice;
 class Cell {
