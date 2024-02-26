@@ -9,8 +9,10 @@
 
 #include <utility>
 #include <iostream>
+#include <utility>
+#include <vector>
 
-typedef int Position;
+typedef std::pair<int, int> Position;
 typedef int State;
 
 class Lattice;
@@ -18,6 +20,7 @@ class Cell {
   private:
     Position position; // Posición de la célula en el retículo
     State state;       // Estado de la célula (0 o 1)
+    State next_state;  // Siguiente estado de la célula
     bool border = false;
 
   public:
@@ -31,13 +34,22 @@ class Cell {
     void setState(State new_state);
 
     // Método para calcular el siguiente estado de la célula
-    State nextState(const Lattice& lattice) const;
+    State nextState(Lattice& lattice) const;
 
     // Método para actualizar el estado de la célula
     void updateState();
 
     // Método para establecer si la célula está en el borde
     void setBorder(bool b);
+
+    // Método para obtener si la célula está en el borde
+    bool isBorder() const;
+
+    // Método para establecer el siguiente estado de la célula
+    void setNextState(State s);
+
+    // Método para obtener el siguiente estado de la célula
+    State getNextState() const;
 
     // Método para establecer la posición de la célula
     void setPosition(Position p);

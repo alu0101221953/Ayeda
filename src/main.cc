@@ -1,6 +1,6 @@
 /**
  * @file main.cc
- * @brief Programa principal que implementa el autómata celular
+ * @brief Programa principal que implementa el juego de la vida
  * @version 1.0
  * @date 18/02/2024
  * @author Víctor Cánovas del Pino alu0101221953
@@ -14,96 +14,114 @@
 
 #include "lattice.h"
 
-std::atomic<bool> stop_flag(false);
-
-/**
- * @brief Espera a que se pulse una tecla para terminar el programa
- */
-void waitForKeypress() {	
-	char key;
-	while (true) {
-		std::cin >> key;
-		if (key == 'q') {
-			stop_flag = true;
-			break;
-		}
-	}
-}
-
 int main(int argc, char* argv[]) {
-  // Comprobar que se han proporcionado los argumentos necesarios
+//  Recibe por línea de comandos los siguientes argumentos:
+// -size <M> <N>, M es el número de filas y N es el número de columnas del
+// tablero.
+// -init <file>, (opcional) file es un nombre del fichero que contiene los valores
+// iniciales para el estado de las células del tablero.
+// -border <b>, b=reflective
+// -border <b>, b=noborder
+
+	// Se comprueba que el número de argumentos sea correcto
 	if (argc < 5) {
-		std::cerr << "Uso: " << argv[0] << " -size <n> -border <b [v]> [-init <file>]" << std::endl;
+		std::cerr << "Error: Número de argumentos incorrecto" << std::endl;
+		std::cerr << "Uso: " << argv[0] << " -size <M> <N> [-init <file>] -border <b>" << std::endl;
 		return 1;
 	}
 
-  // Variables para almacenar los argumentos
-	int size;
+	// Se inicializan las variables
+	int rows, cols;
+	std::string filename;
 	BoundaryType boundary_type;
-	std::string init_file;
 
-	// Procesar los argumentos
-	for (int i = 1; i < argc; ++i) {
-		std::string arg = argv[i];
-		if (arg == "-size") {
-			if (i + 1 < argc) {
-						size = std::stoi(argv[i + 1]);
-			} else {
-				std::cerr << "Error: Falta el tamaño del retículo después de -size" << std::endl;
+	// Se leen los argumentos
+	for (int i = 1; i < argc; i++) {
+		if (std::string(argv[i]) == "-size") {
+			rows = std::stoi(argv[i + 1]);
+			cols = std::stoi(argv[i + 2]);
+			if (rows <= 0 || cols <= 0) {
+				std::cerr << "Error: Número de filas y columnas debe ser mayor que 0" << std::endl;
 				return 1;
 			}
-		} else if (arg == "-border" || arg == "-b") {
-			if (i + 1 < argc) {
-				if (std::string(argv[i + 1]) == "open") {
-					if (i + 2 < argc) {
-						if (std::string(argv[i + 2]) == "0") {
-							boundary_type = 0;
-						} else if (std::string(argv[i + 2]) == "1") {
-							boundary_type = 1;
-						} else {
-							std::cerr << "Error: Tipo de frontera no reconocido" << std::endl;
-							return 1;
-						}
-					} else {
-						std::cerr << "Error: Falta el tipo de frontera después de -border" << std::endl;
-						return 1;
-					}
-				} else if (std::string(argv[i + 1]) == "periodic") {
-					boundary_type = 2;
-				} else {
-					std::cerr << "Error: Tipo de frontera no reconocido" << std::endl;
-					return 1;
-				}
-			} else {
-				std::cerr << "Error: Falta el tipo de frontera después de -border" << std::endl;
+			else if (std::string(argv[i + 3]) != "-init" && std::string(argv[i + 3]) != "-border") {
+				std::cerr << "Error: Argumentos incorrectos" << std::endl;
+				std::cerr << "Uso: " << argv[0] << " -size <M> <N> [-init <file>] -border <b>" << std::endl;
 				return 1;
 			}
-		} else if (arg == "-init") {
-				if (i + 1 < argc) {
-						init_file = argv[i + 1];
-				} else {
-					std::cerr << "Error: Falta el nombre del archivo de inicialización después de -init" << std::endl;
-					return 1;
+		} else if (std::string(argv[i]) == "-init") {
+			filename = argv[i + 1];
+		} else if (std::string(argv[i]) == "-border" || std::string(argv[i]) == "-b") {
+			if (std::string(argv[i + 1]) == "reflective") {
+				boundary_type = 0;
+			} else if (std::string(argv[i + 1]) == "noborder") {
+				boundary_type = 1;
+			} else {
+				std::cerr << "Error: Tipo de frontera incorrecto" << std::endl;
+				std::cerr << "Uso: " << argv[0] << " -size <M> <N> [-init <file>] -border <b>" << std::endl;
+				return 1;
 			}
 		}
 	}
 
-	// Crear el autómata celular
-	Lattice lattice(size, boundary_type, init_file);
-
-	std::cout << "Estado inicial: " << lattice << " Células vivas: " << lattice.getPopulation() << std::endl;
-	std::cout << "Pulsa enter para empezar" << std::endl;
-	std::cin.get();
-	std::thread key_thread(waitForKeypress);
-	std::cout << "Pulsa 'q' para terminar" << std::endl;
-	while(!stop_flag) {
-		lattice.nextGeneration();
+	if (filename.empty()) {
+		Lattice lattice(rows, cols, boundary_type);
 		std::cout << lattice << std::endl;
-		std::cout << "Células vivas: " << lattice.getPopulation() << std::endl;
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+		// Se inicia el bucle de simulación
+		char key;
+		while (true) {
+			std::cin >> key;
+			if (key == 'x') {
+				break;
+			} else if (key == 'n') {
+				lattice.nextGeneration();
+				std::cout << lattice << std::endl;
+			} else if (key == 'L') {
+				for (int i = 0; i < 5; i++) {
+					lattice.nextGeneration();
+					std::cout << lattice << std::endl;
+				}
+			} else if (key == 'c') {
+				std::cout << "Población: " << lattice.getPopulation() << std::endl;
+			} else if (key == 's') {
+				std::string output;
+				std::cout << "Introduce el nombre del fichero: ";
+				std::cin >> output;
+				std::ofstream file(output);
+				file << lattice;
+				file.close();
+			}
+		}
+	} else {
+		Lattice lattice(filename.c_str(), boundary_type);
+		std::cout << lattice << std::endl;
+
+		// Se inicia el bucle de simulación
+		char key;
+		while (true) {
+			std::cin >> key;
+			if (key == 'x') {
+				break;
+			} else if (key == 'n') {
+				lattice.nextGeneration();
+				std::cout << lattice << std::endl;
+			} else if (key == 'L') {
+				for (int i = 0; i < 5; i++) {
+					lattice.nextGeneration();
+					std::cout << lattice << std::endl;
+				}
+			} else if (key == 'c') {
+				std::cout << "Población: " << lattice.getPopulation() << std::endl;
+			} else if (key == 's') {
+				std::string filename;
+				std::cout << "Introduce el nombre del fichero: ";
+				std::cin >> filename;
+				std::ofstream file(filename);
+				file << lattice;
+				file.close();
+			}
+		}
 	}
-
-	key_thread.join();
-
 	return 0;
 }

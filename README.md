@@ -1,188 +1,153 @@
-# Ayeda P1. Autómata celular elemental
+# Ayeda P2. El juego de la vida
 ---
 1. **Objetivo**
 
-En esta práctica se implementan tipos de datos definidos por el usuario en lenguaje C++.
+En esta práctica se implementan y usan tipos de datos definidos por el usuario y la sobrecarga de
+operadores en lenguaje C++.
 
 2. **Entrega**
 
-Se realizará en dos sesiones de laboratorio en las siguientes fechas:
-Sesión tutorada: del 5 al 9 de febrero
-Sesión de entrega: del 19 al 23 de febrero
+Se realizará durante la sesión de entrega en el laboratorio entre el 26 de febrero y el 1 de marzo.
 
 3. **Enunciado**
 
-Un autómata celular [1] es un modelo matemático y computacional para un sistema dinámico que
-evoluciona en pasos discretos. Es adecuado para modelar sistemas naturales que puedan ser
-descritos como una colección masiva de objetos simples que interactúan localmente.
-Los elementos básicos para describir un autómata celular [2] son:
+El juego de la vida es un ejemplo de autómata celular diseñado por el matemático británico
+John Horton Conway en 1970. Siguiendo la caracterización de autómata celular dada en el
+enunciado de la práctica anterior , podemos describir el juego de la vida con los siguientes
+componentes:
 
-    ● Un espacio celular, consiste en un retículo [4] que se define sobre un espacio infinito
-regular n-dimensional. Puede ser una línea, espacio unidimensional; un plano, espacio
-bidimensional, etc. Cada división homogénea del espacio se denomina celda o célula.
+    ● El espacio celular se define mediante un retículo bidimensional, un tablero donde cada
+casilla es una célula.
 
-    ● Un conjunto de estados, también denominado alfabeto. Cada célula toma un estado de
-este conjunto finito. Los estados se pueden representar mediante valores o colores. Se
-denomina configuración inicial a la asignación de estado para cada una de las células en el
-momento de iniciar la evolución.
+    ● El alfabeto contiene dos estados posibles para cada célula: «viva» o «muerta».
 
-    ● Una vecindad define al conjunto finito de células consideradas adyacentes a una dada, así
-como la posición relativa de cada célula vecina respecto a ella.
+    ● La vecindad, denominada vecindad de Moore, está constituida para cada célula por sus
+ocho células adyacentes sobre el tablero.
 
-    ● Una función de transición local, define cómo debe cambiar el estado de cada célula
-dependiendo de su estado anterior y de los estados anteriores de las células de su
-vecindad. En cada paso discreto de tiempo, que denominamos generación, se aplica la
-función de transición local a cada una de las células del espacio. Por tanto, es la regla de
-evolución que determina el comportamiento del autómata celular.
+    ● La función de transición local, que cada célula aplica para calcular su estado en la
+siguiente generación, depende de su estado actual y del número de células con valor de
+estado «viva» en su vecindad. La versión original del juego utiliza la regla de transición
+denotada como “23/3”, que consiste en:
 
-    ● Condiciones de frontera, en las implementaciones prácticas no es posible definir un
-retículo infinito, sino que se utilizan retículos finitos. Por tanto habrá células ubicadas en el
-borde del retículo, que requieren unas consideraciones específicas para manejar su
-vecindad. Se denominan condiciones de frontera a las consideraciones que permiten
-manejar las células en los bordes del retículo. Algunas son:
+        ○ Una célula en estado «viva» con 2 ó 3 células vecinas en estado «viva» continúa
+        en estado «viva» en la siguiente generación. En otro caso pasa al estado «muerta».
 
-    ○ Frontera abierta. Se considera que todas las células fuera del retículo tiene un valor
-    fijo.
+        ○ Una célula en estado «muerta» con exactamente 3 células vecinas en estado
+        «viva» pasa al estado «viva» en la siguiente generación. En otro caso permanece
+        en estado «muerta».
 
-    ○ Frontera periódica. Se considera que los extremos del retículo son adyacentes.
+    ● Las condiciones de frontera, además de las descritas en la práctica anterior: frontera
+abierta, frontera periódica y frontera reflectora; se incluye un nuevo tipo de condición
+denominado “Sin frontera”.
 
-    ○ Frontera reflectora. Se considera que las células fuera del retículo reflejan a las
-    células adyacentes al borde dentro del retículo.
-
-Un autómata celular elemental [3], el autómata celular no trivial más simple, es uno de los
-modelos más sencillos de computación que se define a partir de los siguientes elementos:
-
-    ● El espacio celular consiste en un retículo unidimensional de células. Aunque en teoría esta
-retícula se extienda de forma infinita, en la práctica es necesario definir unos límites. Para
-tratar las células ubicadas en los límites del retículo se definen las denominadas
-condiciones de frontera.
-
-    ● El alfabeto contiene dos estados posibles, representados por los valores «0» y «1».
-
-    ● La vecindad está constituida, para cada célula, por ella misma C, la célula adyacente por la
-izquierda L y la célula adyacente por la derecha R. Si tomamos el valor binario del estado
-de las tres células de una vecindad, LCR, tenemos 23=8 configuraciones posibles.
-
-    ● La función de transición calcula el valor del estado para la célula C(G+1) en la siguiente
-generación (G+1), a partir de la configuración de la vecindad L(G)C(G)R(G) en la generación
-actual (G). Por tanto, existen 28=256 posibles reglas para definir el estado de una célula en
-la generación siguiente. Stephen Wolfram [5] propuso un esquema, conocido como el
-código Wolfram, para asignar a cada regla un número de 0 a 255. Este número
-corresponde a la representación binaria de las ocho configuraciones posibles de estados
-en una vecindad. Cada una de estas 256 reglas define un autómata celular elemental
-diferente.
-
-El autómata celular definido por la regla 110, indicada en la siguiente tabla, es equivalente a la
-Máquina de Turing Universal:
-111 110 101 100 011 010 001 000                 L(G)C(G)R(G)
- 0   1   1   0   1   1   1   0    C(G+1)=(C(G)+R(G)+C(G)*R(G)+L(G)*C(G)*R(G))%2
-Regla 110d = 01101110b
+        ○ Se define un retículo que cambia de tamaño de forma dinámica cada vez que
+        alguna célula con estado «viva» en el borde necesita interactuar con sus vecinas.
+        El juego de la vida pertenece a la categoría de juego de cero jugadores, lo que quiere decir que
+        su evolución en sucesivas generaciones está determinada únicamente por la configuración inicial,
+        y no necesita ninguna entrada de datos posterior.
 
 4. **Notas de implementación**
 
-El objetivo de esta práctica es implementar las clases, tipos de datos definidos por el usuario, que
-representan los componentes de un autómata celular elemental. Para cada clase se definen sus
-responsabilidades, entendidas como la información que debe almacenar y las operaciones que
-debe realizar. Se propone las siguientes clases:
+En esta práctica se mantienen las especificaciones de las clases dadas en la práctica anterior [4]
+para la implementación del autómata celular elemental. También se utiliza la sobrecarga de
+operadores para implementar algunas de las operaciones.
 
-1. La célula, Cell,es responsable de encapsular su estado binario y su posición dentro del
-retículo unidimensional que representa al espacio celular. También es responsable de
-conocer su vecindad y su función de transición.
+1. La clase célula, Cell, representa la presencia o ausencia de vida en una posición del
+tablero. Mantiene la especificación vista en la práctica anterior, siendo responsable de
+encapsular su estado y posición, de conocer su vecindad y la función de transición local, y
+de actualizar su estado para la siguiente generación. Hay que tener en cuenta las
+siguientes consideraciones:
 
-    a. El constructor de la célula recibe como parámetro su posición dentro del retículo, y
-    de forma opcional su estado en la configuración inicial. Por defecto, la célula se
-    crea con estado «0».
+    a. En un espacio bidimensional cada posición del retículo se identifica con un par de
+    coordenadas enteras (coordenada_0,coordenada_1). Por tanto, hay que
+    redefinir el tipo de dato Position para contener esta pareja de coordenadas. Para
+    ello se puede declarar una nueva clase o se puede utilizar el tipo std::pair
+    definido en la librería <utility> de la STL.
 
-    *Cell::Cell(const Position&, const State&);*
+    b. En la vecindad de Moore cada célula, con posición (i,j), tiene 8 vecinas que
+    ocupan las siguientes posiciones en el tablero:
 
-    b. Se dispone de un método para acceder al estado de la célula.
+    (i-1,j-1)|(i-1,j)|(i-1,j+1)
+    ---------------------------
+    (i,j-1)| (i,j)| (i,j+1)
+    ---------------------------
+    (i+1,j-1)|(i+1,j)|(i+1,j+1)
 
-    *State Cell::getState() const;*
+    c. La visualización en pantalla utiliza el carácter ‘X’ para representar el estado
+    «viva», y el carácter espacio ‘ ‘ para el estado «muerta». Se sobrecarga el
+    operador de inserción en flujo.
 
-    c. Aunque el estado de una célula evoluciona sin necesidad de acceso exterior, se
-    implementa un método modificador para poder establecer la configuración inicial.
+    ostream& operator<<(ostream&, const Cell&)
 
-    *State Cell::setState(State);*
+2. La clase retículo, Lattice, es el objeto responsable de crear y almacenar las células que
+forman parte del juego. En este caso se utilizará un array bidimensional de MxN células.
+También es responsable de establecer el estado de cada célula en la configuración inicial.
 
-    d. La célula dispone de un método que aplica la función de transición para obtener su
-    estado en la siguiente generación. Para ello, además de su posición, la célula
-    necesita conocer el estado de las células de su vecindad en la generación actual.
-    Este método recibe el retículo por parámetro y calcula el siguiente estado sin
-    evolucionar.
+    a. Como en el caso del autómata celular elemental, el retículo dispone de un
+    constructor que crea las células en memoria dinámica, con valor inicial de estado
+    «muerta». Este constructor se apoya en un método auxiliar para solicitar por
+    teclado las posiciones de las células que deben estar vivas en la configuración
+    inicial.
 
-    *int Cell::nextState(const Lattice&);*
+    Lattice::Lattice(int N, int M);
 
-    e. Después de que cada célula haya calculado su siguiente estado, la evolución del
-    autómata celular consiste en hacer que cada célula actualice su valor de estado.
+    b. El retículo implementa un segundo constructor que recibe como parámetro el
+    nombre de un fichero. La primera fila del fichero de texto contiene el número de
+    filas (M) y columnas (N) del tablero. A continuación contiene las M cadenas de N
+    caracteres, donde ‘ ‘ indica una célula «muerta» y ‘X’ indica una célula «viva».
 
-    *void Cell::updateState();*
+    Lattice::Lattice(const char*);
 
-    f. La célula es responsable de su visualización en pantalla, que realiza mediante la
-    sobrecarga del operador de inserción en flujo. Para facilitar la visualización se
-    utilizará el carácter ‘X’ para representar el valor de estado «1», y el carácter
-    espacio ‘ ‘ para el valor de estado «0».
+    c. Se añade a esta clase la responsabilidad de conocer la población. Esto es, el
+    número de células en estado «viva» en la generación actual.
 
-    *ostream& operator<<(ostream&, const Cell&);*
+    std::size_t Lattice::Population() const;
 
-2. El retículo, Lattice, contiene un array de N células. Este objeto es responsable de crear
-y almacenar las células que representan el espacio celular. También es responsable de
-controlar la evolución y llevar la cuenta de las generaciones.
+    d. Para dar acceso a las células por la posición que ocupa en el retículo se
+    sobrecarga el operador.
 
-    a. El constructor del retículo crea las células en memoria dinámica.
+    Cell& Lattice::operator[](const Position&) const;
 
-    b. Método para cargar la configuración inicial del autómata celular. Esto es, inicializa
-    el estado de cada célula en la generación G=0. Por defecto, la configuración inicial
-    consiste en colocar el valor de estado «0» en todas las células, salvo en la célula
-    central del retículo que tendrá el valor de estado «1».
+    e. En la implementación de la condición de frontera “Sin frontera” el tablero se crea
+    inicialmente con un tamaño dado. Cuando tras un cambio de generación alguna de
+    las células del borde pasa a estado «viva», se incrementa el tamaño del tablero
+    creando una nueva fila, o columna, de células en estado «muerta» que será el
+    nuevo borde en la siguiente generación. Para contener las células del tablero se
+    utilizará una estructura de datos dinámica, como std::vector, que permitirá
+    cambiar el tamaño de la estructura durante la ejecución. Hay que tener en cuenta
+    que al añadir elementos por principio del vector se cambia la posición de todos los
+    elementos que contiene.
 
-    c. El retículo dispone de un método para dar acceso de lectura a las células.
-
-    *const Cell& Lattice::getCell(const Position&) const;*
-
-    d. El retículo es responsable de controlar la evolución del autómata, asegurando que
-    todas las células calculan su estado en la generación G+1 a partir de los valores de
-    estado en la generación G. Esta operación la realiza el siguiente método:
-
-    *void Lattice::nextGeneration();*
-
-    Para ello se realizan dos recorridos sobre las células del retículo:
-
-        i. En el primer recorrido cada célula accede a su vecindad y aplica la función
-        de transición para calcular su estado siguiente.
-
-        ii. En el segundo recorrido cada célula actualiza su estado.
-    
-    e. Para la visualización del retículo se sobrecarga el operador de inserción en flujo. Un
-    retículo se muestra como una línea en pantalla.
-
-    *ostream& operator<<(ostream&, const Lattice&);*
-
-    f. El retículo debe manejar las condiciones de frontera, que tal y como se ha indicado
-    previamente, se corresponden con el tratamiento de las células que se encuentren
-    en los bordes del mismo. En esta práctica se implementarán las siguientes
-    técnicas:
-
-        i. Frontera abierta. Se añade una célula en cada borde del retículo con un
-        valor de estado fijo e inalterable. Una frontera se dice fría si las células
-        fuera de la frontera tiene estado «0», y caliente si tiene estado «1».
-
-        ii. Frontera periódica. En un array de N posiciones, se considerarán
-        adyacentes las celdas ubicadas en la posición cero y N-1.
-
-3. El programa principal tiene el siguiente comportamiento.
+3. El funcionamiento del programa principal es el siguiente:
     a. Recibe por línea de comandos los siguientes argumentos:
 
-    -size <n>, n es el tamaño del retículo. Número de células.
+    -size <M> <N>, M es el número de filas y N es el número de columnas del
+    tablero.
 
-    -border <b [v]>, b=open, v=[0|1]. Frontera abierta, fría o caliente.
-                     b=periodic
+    -init <file>, (opcional) file es un nombre del fichero que contiene los valores
+    iniciales para el estado de las células del tablero.
 
-    [-init <file>], (opcional) file es un nombre del fichero que contiene un
-    array de estados con la configuración inicial del autómata celular.
-    Si no se especifica se utilizará la configuración inicial por defecto,
-    esto es, un «1» en la célula central del retículo.
+    -border <b>, b=reflective
+                 b=noborder
 
-    b. Crea los componentes del autómata celular a partir de los argumentos recibidos y
-    simula la evolución del autómata celular, mostrando por pantalla la configuración de
-    estados en cada generación. La simulación se puede detener en cualquier
-    momento pulsando un carácter elegido como fin de ejecución.
+    b. Crea e inicializa los componentes del juego de la vida. Los argumentos -size e -init
+    son excluyentes.
+
+    Con el argumento -size se utiliza el primer constructor del retículo.
+
+    Con el argumento -init se utiliza el segundo constructor del retículo.
+
+    c. Realiza la evaluación en generaciones del juego, mostrando en cada generación el
+    tablero por pantalla. El usuario controla la simulación con los siguientes comandos
+    introducidos por teclado:
+
+    ‘x' : Finaliza la ejecución del programa
+
+    ‘n’ : Calcula y muestra la siguiente generación
+
+    ‘L’ : Calcula y muestra las siguientes cinco generaciones
+
+    ‘c’ : Los comandos ‘n’ y ‘L’ dejan de mostrar el estado del tablero y sólo se muestra
+    la población, esto es, el número de células en estado «viva»
+    
+    ‘s’ : Salva el tablero a un fichero
