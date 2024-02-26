@@ -70,17 +70,21 @@ int main(int argc, char* argv[]) {
 			if (key == 'x') {
 				break;
 			} else if (key == 'n') {
-				lattice.nextGeneration();
-				std::cout << lattice << std::endl;
 				if (flag) {
+					lattice.nextGeneration();
 					std::cout << "Población: " << lattice.getPopulation() << std::endl;
+				} else {
+					lattice.nextGeneration();
+					std::cout << lattice << std::endl;
 				}
 			} else if (key == 'L') {
 				for (int i = 0; i < 5; i++) {
-					lattice.nextGeneration();
-					std::cout << lattice << std::endl;
 					if (flag) {
+						lattice.nextGeneration();
 						std::cout << "Población: " << lattice.getPopulation() << std::endl;
+					} else {
+						lattice.nextGeneration();
+						std::cout << lattice << std::endl;
 					}
 				}
 			} else if (key == 'c') {
@@ -105,17 +109,21 @@ int main(int argc, char* argv[]) {
 			if (key == 'x') {
 				break;
 			} else if (key == 'n') {
-				lattice.nextGeneration();
-				std::cout << lattice << std::endl;
 				if (flag) {
+					lattice.nextGeneration();
 					std::cout << "Población: " << lattice.getPopulation() << std::endl;
+				} else {
+					lattice.nextGeneration();
+					std::cout << lattice << std::endl;
 				}
 			} else if (key == 'L') {
 				for (int i = 0; i < 5; i++) {
-					lattice.nextGeneration();
-					std::cout << lattice << std::endl;
 					if (flag) {
+						lattice.nextGeneration();
 						std::cout << "Población: " << lattice.getPopulation() << std::endl;
+					} else {
+						lattice.nextGeneration();
+						std::cout << lattice << std::endl;
 					}
 				}
 			} else if (key == 'c') {
