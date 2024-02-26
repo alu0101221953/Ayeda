@@ -14,14 +14,9 @@
 
 #include "lattice.h"
 
+bool flag;
+
 int main(int argc, char* argv[]) {
-//  Recibe por línea de comandos los siguientes argumentos:
-// -size <M> <N>, M es el número de filas y N es el número de columnas del
-// tablero.
-// -init <file>, (opcional) file es un nombre del fichero que contiene los valores
-// iniciales para el estado de las células del tablero.
-// -border <b>, b=reflective
-// -border <b>, b=noborder
 
 	// Se comprueba que el número de argumentos sea correcto
 	if (argc < 5) {
@@ -34,7 +29,7 @@ int main(int argc, char* argv[]) {
 	int rows, cols;
 	std::string filename;
 	BoundaryType boundary_type;
-
+	flag = false;
 	// Se leen los argumentos
 	for (int i = 1; i < argc; i++) {
 		if (std::string(argv[i]) == "-size") {
@@ -77,13 +72,19 @@ int main(int argc, char* argv[]) {
 			} else if (key == 'n') {
 				lattice.nextGeneration();
 				std::cout << lattice << std::endl;
+				if (flag) {
+					std::cout << "Población: " << lattice.getPopulation() << std::endl;
+				}
 			} else if (key == 'L') {
 				for (int i = 0; i < 5; i++) {
 					lattice.nextGeneration();
 					std::cout << lattice << std::endl;
+					if (flag) {
+						std::cout << "Población: " << lattice.getPopulation() << std::endl;
+					}
 				}
 			} else if (key == 'c') {
-				std::cout << "Población: " << lattice.getPopulation() << std::endl;
+				flag = true;
 			} else if (key == 's') {
 				std::string output;
 				std::cout << "Introduce el nombre del fichero: ";
@@ -106,13 +107,19 @@ int main(int argc, char* argv[]) {
 			} else if (key == 'n') {
 				lattice.nextGeneration();
 				std::cout << lattice << std::endl;
+				if (flag) {
+					std::cout << "Población: " << lattice.getPopulation() << std::endl;
+				}
 			} else if (key == 'L') {
 				for (int i = 0; i < 5; i++) {
 					lattice.nextGeneration();
 					std::cout << lattice << std::endl;
+					if (flag) {
+						std::cout << "Población: " << lattice.getPopulation() << std::endl;
+					}
 				}
 			} else if (key == 'c') {
-				std::cout << "Población: " << lattice.getPopulation() << std::endl;
+				flag = true;
 			} else if (key == 's') {
 				std::string filename;
 				std::cout << "Introduce el nombre del fichero: ";
