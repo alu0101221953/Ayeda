@@ -199,7 +199,7 @@ HashTable<Key,Container>::HashTable(unsigned,DispersionFunction<Key>&, Explorati
 de la plantilla cuando se utiliza el tipo dynamicSequence<Key> como parámetro
 Container.
 
-template<class Key> class HashTable<Key, dynamicSequence<Key> >
+template<class Key> class HashTable<Key, dynamicSequence<Key>>
 
 11. Para la implementación de la técnica de dispersión abierta no se requieren los atributos
 función de exploración y tamaño del bloque, utilizados por las estrategias de exploración.
@@ -208,18 +208,18 @@ Por tanto, el constructor de la clase sólo requiere los parámetros:
 
 HashTable<Key,dynamicSequence<Key> >::HashTable(unsigned,DispersionFunction<Key>&);
 
-a. El atributo table es un array con tableSize posiciones, cada una de las cuales
-contiene un objeto dynamicSequence<Key>.
+    a. El atributo table es un array con tableSize posiciones, cada una de las cuales
+    contiene un objeto dynamicSequence<Key>.
 
 12. El programa principal aceptará las siguientes opciones por línea de comandos:
 
-    a. -ts <s>, s es el tamaño de la tabla.  
-    b. -fd <f>, f es el código que identifica a una función de dispersión.  
-    c. -hash <open|close>, indica la técnica de dispersión a utilizar. Implica el tipo de
-    secuencia utilizada para el parámetro Container.  
-    d. -bs <s>, s es el tamaño del bloque. Sólo para dispersión cerrada.  
-    e. -fe <f>, f es el código que identifica a una función de exploración. Sólo para
-    dispersión cerrada.
+        a. -ts <s>, s es el tamaño de la tabla.  
+        b. -fd <f>, f es el código que identifica a una función de dispersión.  
+        c. -hash <open|close>, indica la técnica de dispersión a utilizar. Implica el tipo de
+        secuencia utilizada para el parámetro Container.  
+        d. -bs <s>, s es el tamaño del bloque. Sólo para dispersión cerrada.  
+        e. -fe <f>, f es el código que identifica a una función de exploración. Sólo para
+        dispersión cerrada.
 
 13. Se crea el objeto que implementa la función de dispersión elegida, y si es el caso, también
 se crea el objeto que implementa la función de exploración.
@@ -232,15 +232,11 @@ comandos. Se utiliza una clase nif como tipo de dato Key en la plantilla.
 Encapsula un número entero de 8 dígitos, e implementa las operaciones necesarias para
 poder utilizarlo como tipo de dato Key.
 
-    a. El constructor por defecto crea e inicializa un dato nif con un valor aleatorio.
-
-    b. Constructor de cambio de tipo a partir de un dato entero long.
-
-    c. Sobrecarga de los operadores de comparación utilizados.
-
+    a. El constructor por defecto crea e inicializa un dato nif con un valor aleatorio.  
+    b. Constructor de cambio de tipo a partir de un dato entero long.  
+    c. Sobrecarga de los operadores de comparación utilizados.  
     d. Sobrecarga del operador de cambio de tipo, que permite convertir un dato de tipo
-    nif en un entero para realizar las operaciones numéricas.
-    
+    nif en un entero para realizar las operaciones numéricas.  
     nif::operator long();
 
 16. A continuación implementa un menú que permite insertar y buscar los valores de clave
