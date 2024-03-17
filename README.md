@@ -69,7 +69,7 @@ parámetros adicionales:
 
 Las funciones f(k) y f(i)(k) son funciones de dispersión adecuadas para generar un valor de desplazamiento en el rango [1..tableSize-1].
 
-4. Notas de implementación
+4. **Notas de implementación**
 
 Para desarrollar un tipo de dato genérico que permita configurar el funcionamiento de las técnicas
 de búsqueda por dispersión se implementan los siguientes tipos de datos auxiliares.
@@ -213,15 +213,11 @@ contiene un objeto dynamicSequence<Key>.
 
 12. El programa principal aceptará las siguientes opciones por línea de comandos:
 
-    a. -ts <s>, s es el tamaño de la tabla.
-
-    b. -fd <f>, f es el código que identifica a una función de dispersión.
-
+    a. -ts <s>, s es el tamaño de la tabla.  
+    b. -fd <f>, f es el código que identifica a una función de dispersión.  
     c. -hash <open|close>, indica la técnica de dispersión a utilizar. Implica el tipo de
-    secuencia utilizada para el parámetro Container.
-
-    d. -bs <s>, s es el tamaño del bloque. Sólo para dispersión cerrada.
-
+    secuencia utilizada para el parámetro Container.  
+    d. -bs <s>, s es el tamaño del bloque. Sólo para dispersión cerrada.  
     e. -fe <f>, f es el código que identifica a una función de exploración. Sólo para
     dispersión cerrada.
 
