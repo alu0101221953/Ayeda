@@ -270,17 +270,6 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	// Hay 2 argumentos mas: -num <n>
-	for (int i = 1; i < argc; i++) {
-		std::string arg = argv[i];
-		if (arg == "-num") {
-			if (i + 1 < argc) {
-				num = std::stoi(argv[i + 1]);
-				i++;
-			}
-		}
-	}
-
 	if (hashTechnique == "open") {
 		openHash(tableSize, dispersionFunctionCode);
 	} else {
