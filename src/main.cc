@@ -221,7 +221,6 @@ int main(int argc, char *argv[]) {
 	std::string hashTechnique;
 	int dispersionFunctionCode;
 	int explorationFunctionCode;
-	unsigned num = 0;
 
 	if (argc < 7) {
 		std::cerr << "Error: Numero de argumentos invalido" << std::endl;

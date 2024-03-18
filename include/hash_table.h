@@ -76,11 +76,15 @@ bool HashTable<Key, Container>::insert(const Key& k) {
     if (!search(k)) {
         unsigned index = _dispersion(k);
         if (_table[index]->isFull()) {
-            unsigned i = 0;
+            unsigned i = index;
             unsigned newIndex = _exploration(k, i);
             while (_table[newIndex]->isFull() && i < _tableSize) {
+								i = newIndex; 
                 newIndex = _exploration(k, i);
-                i++;
+								if ((newIndex == 1) && (_table[newIndex]->isFull())) newIndex++;
+								if (newIndex >= _tableSize) {
+									newIndex = newIndex % _tableSize;
+								}
             }
             if (i < _tableSize) {
                 _elements++;
