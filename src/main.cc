@@ -1,49 +1,25 @@
 #include <iostream>
 #include "hash_table.h"
 
-
-// 12. El programa principal aceptará las siguientes opciones por línea de comandos:
-
-//     a. -ts <s>, s es el tamaño de la tabla.
-
-//     b. -fd <f>, f es el código que identifica a una función de dispersión.
-
-//     c. -hash <open|close>, indica la técnica de dispersión a utilizar. Implica el tipo de
-//     secuencia utilizada para el parámetro Container.
-
-//     d. -bs <s>, s es el tamaño del bloque. Sólo para dispersión cerrada.
-
-//     e. -fe <f>, f es el código que identifica a una función de exploración. Sólo para
-//     dispersión cerrada.
-
-// 13. Se crea el objeto que implementa la función de dispersión elegida, y si es el caso, también
-// se crea el objeto que implementa la función de exploración.
-
-// 14. Se crea la tabla hash, con la versión adecuada de la plantilla según el valor indicado en la
-// opción -hash, invocando al constructor con los parámetros indicados por línea de
-// comandos. Se utiliza una clase nif como tipo de dato Key en la plantilla.
-
-// 15. El tipo de dato nif representa la parte numérica del número de identificación fiscal.
-// Encapsula un número entero de 8 dígitos, e implementa las operaciones necesarias para
-// poder utilizarlo como tipo de dato Key.
-
-//     a. El constructor por defecto crea e inicializa un dato nif con un valor aleatorio.
-
-//     b. Constructor de cambio de tipo a partir de un dato entero long.
-
-//     c. Sobrecarga de los operadores de comparación utilizados.
-
-//     d. Sobrecarga del operador de cambio de tipo, que permite convertir un dato de tipo
-//     nif en un entero para realizar las operaciones numéricas.
-    
-//     nif::operator long();
-
-class NIF { // El tipo de dato nif representa la parte numérica del número de identificación fiscal, tiene 8 dígitos
+/**
+ * @brief Clase que representa un NIF
+*/
+class NIF { 
 	private:
 		long _nif;
 	public:
+		/**
+		 * @brief Constructor por defecto
+		*/
 		NIF() : _nif(rand() % 100000000) {};
+		/**
+		 * @brief Constructor con parametro
+		 * @param n NIF
+		*/
 		explicit NIF(long n) : _nif(n) {};
+		/**
+		 * @brief Sobrecarga de operadores
+		*/
 		bool operator==(const NIF& n) const { return _nif == n._nif; };
 		bool operator!=(const NIF& n) const { return _nif != n._nif; };
 		bool operator<(const NIF& n) const { return _nif < n._nif; };
@@ -108,15 +84,16 @@ void openHash(unsigned tableSize, int dispersionFunctionCode) {
 				if (ht->search(NIF(nif))) std::cout << "Encontrado" << std::endl;
 				else std::cout << "No encontrado" << std::endl;
 				std::cout << "Presione Enter para continuar...";
-        getchar();
-        getchar();
+				getchar();
+				getchar();
 				break;
 			case 4:
 				system("clear");
 				ht->print();
+				std::cout << "Elementos: " << ht->getElements() << "\n";
 				std::cout << "Presione Enter para continuar...";
-        getchar();
-        getchar();
+				getchar();
+				getchar();
 				break;
 			case 5:
 				system("clear");
@@ -223,6 +200,7 @@ void closeHash(unsigned tableSize, int dispersionFunctionCode, unsigned blockSiz
 			case 4:
 				system("clear");
 				ht->print();
+				std::cout << "Elementos: " << ht->getElements() << "\n";
 				std::cout << "Presione Enter para continuar...";
 				getchar();
 				getchar();
@@ -243,6 +221,7 @@ int main(int argc, char *argv[]) {
 	std::string hashTechnique;
 	int dispersionFunctionCode;
 	int explorationFunctionCode;
+	unsigned num = 0;
 
 	if (argc < 7) {
 		std::cerr << "Error: Numero de argumentos invalido" << std::endl;
@@ -287,6 +266,17 @@ int main(int argc, char *argv[]) {
 					explorationFunctionCode = std::stoi(argv[i + 1]);
 					i++;
 				}
+			}
+		}
+	}
+
+	// Hay 2 argumentos mas: -num <n>
+	for (int i = 1; i < argc; i++) {
+		std::string arg = argv[i];
+		if (arg == "-num") {
+			if (i + 1 < argc) {
+				num = std::stoi(argv[i + 1]);
+				i++;
 			}
 		}
 	}

@@ -44,12 +44,15 @@ class HashTable {
 			 * @brief Imprime la tabla
 			*/
 			void print();
+
+            unsigned getElements() const { return _elements; }
     private:
 			unsigned _tableSize;
 			unsigned _blockSize;
 			Container** _table;
 			DispersionFunction<Key>& _dispersion;
 			ExplorationFunction<Key>& _exploration;
+            unsigned _elements;
 };
 
 template<class Key, class Container>
@@ -59,6 +62,7 @@ HashTable<Key, Container>::HashTable(unsigned size, unsigned blockSize, Dispersi
     for (unsigned i = 0; i < _tableSize; i++) {
         _table[i] = new Container(_blockSize);
     }
+    _elements = 0;
 }
 
 template<class Key, class Container>
@@ -79,12 +83,14 @@ bool HashTable<Key, Container>::insert(const Key& k) {
                 i++;
             }
             if (i < _tableSize) {
+                _elements++;
                 return _table[newIndex]->insert(k);
             } else {
                 std::cerr << "Error: No hay espacio disponible en la tabla para insertar el elemento" << std::endl;
                 return false;
             }
         } else {
+            _elements++;
             return _table[index]->insert(k);
         }
     } else {
@@ -134,10 +140,13 @@ class HashTable<Key, dynamicSequence<Key>> {
          * @brief Imprime la tabla
         */
         void print();
+
+        unsigned getElements() const { return _elements; }
     private:
         unsigned _tableSize;
         dynamicSequence<Key>** _table;
         DispersionFunction<Key>& _dispersion;
+        unsigned _elements;
 };
 
 template<class Key>
@@ -147,6 +156,7 @@ HashTable<Key, dynamicSequence<Key>>::HashTable(unsigned size, DispersionFunctio
     for (unsigned i = 0; i < _tableSize; i++) {
         _table[i] = new dynamicSequence<Key>();
     }
+    _elements = 0;
 }
 
 template<class Key>
@@ -166,7 +176,12 @@ bool HashTable<Key, dynamicSequence<Key>>::search(const Key& k) const {
 template<class Key>
 bool HashTable<Key, dynamicSequence<Key>>::insert(const Key& k) {
     unsigned index = _dispersion(k);
-    return _table[index]->insert(k);
+    if (_table[index]->insert(k)) {
+        _elements++;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 template<class Key>
