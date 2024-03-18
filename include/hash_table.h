@@ -45,30 +45,38 @@ class HashTable {
 			*/
 			void print();
 
-            unsigned getElements() const { return _elements; }
+			/**
+			 * @brief Comprueba si la tabla está llena
+			 * @return true si está llena, false en otro caso
+			*/
+			bool isFull() const { return _elements == (_tableSize * _blockSize); }
+
+			unsigned getElements() const { return _elements; }
+
+			unsigned getNumberOfExplorations() const { return _exploration.getExplorations(); }
     private:
 			unsigned _tableSize;
 			unsigned _blockSize;
 			Container** _table;
 			DispersionFunction<Key>& _dispersion;
 			ExplorationFunction<Key>& _exploration;
-            unsigned _elements;
+      unsigned _elements;
 };
 
 template<class Key, class Container>
 HashTable<Key, Container>::HashTable(unsigned size, unsigned blockSize, DispersionFunction<Key>& dispersion, ExplorationFunction<Key>& exploration) 
-    : _tableSize(size), _blockSize(blockSize), _dispersion(dispersion), _exploration(exploration) {
-    _table = new Container*[_tableSize];
-    for (unsigned i = 0; i < _tableSize; i++) {
-        _table[i] = new Container(_blockSize);
-    }
-    _elements = 0;
+	: _tableSize(size), _blockSize(blockSize), _dispersion(dispersion), _exploration(exploration) {
+	_table = new Container*[_tableSize];
+	for (unsigned i = 0; i < _tableSize; i++) {
+			_table[i] = new Container(_blockSize);
+	}
+	_elements = 0;
 }
 
 template<class Key, class Container>
 bool HashTable<Key, Container>::search(const Key& k) const {
-    unsigned index = _dispersion(k);
-    return _table[index]->search(k);
+	unsigned index = _dispersion(k);
+	return _table[index]->search(k);
 }
 
 template<class Key, class Container>
@@ -85,7 +93,7 @@ bool HashTable<Key, Container>::insert(const Key& k) {
             if (i < _tableSize) {
                 _elements++;
                 return _table[newIndex]->insert(k);
-            } else {
+            } else if (_elements == (_tableSize * _blockSize)) {
                 std::cerr << "Error: No hay espacio disponible en la tabla para insertar el elemento" << std::endl;
                 return false;
             }

@@ -17,6 +17,7 @@ class ExplorationFunction { // Clase abstracta
 		 * @return Posicion explorada
 		*/
 		virtual unsigned operator()(const Key& k, const unsigned i) const = 0;
+		virtual unsigned getExplorations() const = 0;
 };
 
 /**
@@ -33,6 +34,9 @@ class efLineal : public ExplorationFunction<Key> {
 		 * @return Posicion explorada
 		*/
 		unsigned operator()(const Key& k, const unsigned i) const;
+		unsigned getExplorations() const { return _explorations; }
+	private:
+		mutable unsigned _explorations = 0;
 };
 
 /**
@@ -49,6 +53,9 @@ class efCuadratica : public ExplorationFunction<Key> {
 		 * @return Posicion explorada
 		*/
 		unsigned operator()(const Key& k, const unsigned i) const;
+		unsigned getExplorations() const { return _explorations; }
+	private:
+		mutable unsigned _explorations = 0;
 };
 
 /**
@@ -76,8 +83,11 @@ class efDispersionDoble : public ExplorationFunction<Key> {
 		 * @return Posicion explorada
 		*/
 		unsigned operator()(const Key& k, const unsigned i) const;
+
+		unsigned getExplorations() const { return _explorations; }
 	private:
 		const DispersionFunction<Key>* _fd;
+		mutable unsigned _explorations = 0;
 };
 
 // En la implementación de la estrategia de exploración por redispersión se utiliza el
@@ -108,9 +118,11 @@ class efRedispersion : public ExplorationFunction<Key> {
 		 * @return Posicion explorada
 		*/
 		unsigned operator()(const Key& k, const unsigned i) const;
+		unsigned getExplorations() const { return _explorations; }
 	private:
 		mutable DispersionFunction<Key>* fd;
 		unsigned _tableSize;
+		mutable unsigned _explorations = 0;
 };
 
 
@@ -119,11 +131,13 @@ class efRedispersion : public ExplorationFunction<Key> {
 
 template<class Key> 
 unsigned efLineal<Key>::operator()(const Key& k, const unsigned i) const {
+	_explorations++;
 	return i;
 }
 
 template<class Key>
 unsigned efCuadratica<Key>::operator()(const Key& k, const unsigned i) const {
+	_explorations++;
 	return (i * i);
 }
 
@@ -134,6 +148,7 @@ efDispersionDoble<Key>::~efDispersionDoble() {
 
 template<class Key>
 unsigned efDispersionDoble<Key>::operator()(const Key& k, const unsigned i) const {
+	_explorations++;
 	return i * (*_fd)(k);
 }
 
@@ -156,6 +171,7 @@ efRedispersion<Key>::~efRedispersion() {
 
 template<class Key>
 unsigned efRedispersion<Key>::operator()(const Key& k, const unsigned i) const {
+	_explorations++;
 	srand(static_cast<unsigned>(k));
 	return (*fd)(k) % _tableSize;
 }

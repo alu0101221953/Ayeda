@@ -105,7 +105,7 @@ void openHash(unsigned tableSize, int dispersionFunctionCode) {
 	}
 }
 
-void closeHash(unsigned tableSize, int dispersionFunctionCode, unsigned blockSize, int explorationFunctionCode) {
+void closeHash(unsigned tableSize, int dispersionFunctionCode, unsigned blockSize, int explorationFunctionCode, unsigned num) {
 	DispersionFunction<NIF>* df = nullptr;
 	DispersionFunction<NIF>* df2 = nullptr;
 	ExplorationFunction<NIF>* ef = nullptr;
@@ -185,7 +185,14 @@ void closeHash(unsigned tableSize, int dispersionFunctionCode, unsigned blockSiz
 				break;
 			case 2:
 				system("clear");
-				ht->insert(NIF());
+				for (unsigned i = 0; i < num; i++) {
+					if (ht->isFull()) break;
+					ht->insert(NIF());
+				}
+				std::cout << "Se han insertado " << ht->getElements() << " elementos\n";
+				std::cout << "Presione Enter para continuar...";
+				getchar();
+				getchar();
 				break;
 			case 3:
 				system("clear");
@@ -201,6 +208,7 @@ void closeHash(unsigned tableSize, int dispersionFunctionCode, unsigned blockSiz
 				system("clear");
 				ht->print();
 				std::cout << "Elementos: " << ht->getElements() << "\n";
+				std::cout << "Numero de exploraciones: " << ht->getNumberOfExplorations() << "\n";
 				std::cout << "Presione Enter para continuar...";
 				getchar();
 				getchar();
@@ -284,7 +292,7 @@ int main(int argc, char *argv[]) {
 	if (hashTechnique == "open") {
 		openHash(tableSize, dispersionFunctionCode);
 	} else {
-		closeHash(tableSize, dispersionFunctionCode, blockSize, explorationFunctionCode);
+		closeHash(tableSize, dispersionFunctionCode, blockSize, explorationFunctionCode, num);
 	}
   return 0;
 }

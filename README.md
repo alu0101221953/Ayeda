@@ -1,4 +1,4 @@
-# Ayeda P4. Tablas Hash
+ts# Ayeda P4. Tablas Hash
 ---
 1. **Objetivo**
 
